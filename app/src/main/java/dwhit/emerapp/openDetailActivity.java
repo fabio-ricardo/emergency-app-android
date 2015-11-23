@@ -23,7 +23,9 @@ public class openDetailActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_open_detail);
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+            TextView textView = (TextView) findViewById(R.id.textView);
+            textView.setText("Twitter Source: @"+getIntent().getExtras().getString("timeline"));
+         setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -32,10 +34,12 @@ public class openDetailActivity extends AppCompatActivity {
             }
             ListView lv = (ListView) findViewById(R.id.listView);
             List<String> tweets = new ArrayList<String>();
-            TwitterTimeline getTweets = new TwitterTimeline("ohioamberalert");
+            TwitterTimeline getTweets = new TwitterTimeline(getIntent().getExtras().getString("timeline"));
             tweets = getTweets.GetTimeline();
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1,tweets);
             lv.setAdapter(adapter);
+
+
 
         //setContentView(lv);
 

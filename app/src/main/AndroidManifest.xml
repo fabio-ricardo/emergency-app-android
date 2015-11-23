@@ -8,6 +8,9 @@
         android:label="Alert Hub"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+        <!-- permission required to use Alarm Manager -->
+        <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
 
         <activity android:name=".mainpage" >
             <intent-filter>
