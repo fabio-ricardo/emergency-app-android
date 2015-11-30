@@ -12,7 +12,9 @@
         android:id="@+id/alertListView"
         android:layout_below="@+id/locationView"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:choiceMode="singleChoice"
+        android:clickable="true" />
 
     <TextView
         android:layout_width="wrap_content"
