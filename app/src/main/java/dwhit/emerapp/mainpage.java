@@ -4,8 +4,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +25,12 @@ import java.util.List;
 public class mainpage extends AppCompatActivity {
 
     ListView lv;
+    String type = "";
+    String summary = "";
+    String details = "";
+    public final static String TYPE = "type";
+    public final static String SUMMARY = "summary";
+    public final static String DETAILS = "details";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,22 +38,23 @@ public class mainpage extends AppCompatActivity {
         setContentView(R.layout.activity_mainpage);
         lv = (ListView) findViewById(R.id.alertListView);
 
-        new DHSAlert().execute();
+        ArrayList<String> alerts = new ArrayList<String>();
 
-        // TODO: get actual info
-        String[] test_list = {"hello","this is an alert","ayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy","a","b","c","d","e","f","g","h","k"};
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
+        new DHSAlert().execute();
+        alerts.add(0, "New DHS alert");
+
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alerts);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mainpage.this, openDetailActivity.class);
-                String message = "abc";
-                intent.putExtra("message", message);
+                Intent intent = new Intent(mainpage.this, openDHSDetailActivity.class);
+                intent.putExtra(TYPE, type);
+                intent.putExtra(SUMMARY, summary);
+                intent.putExtra(DETAILS, details);
                 startActivity(intent);
             }
         });
-
     }
 
     /* Uses AsyncTask to run the HTTP get request on a background thread.
@@ -57,34 +62,27 @@ public class mainpage extends AppCompatActivity {
      * Retrieves the XML file from the Department of Homeland Security alerts page and parses the
      * info from this file to be used when displaying alerts.
      */
-    private class DHSAlert extends AsyncTask<Void, Void, String[]>{
+    private class DHSAlert extends AsyncTask<Void, Void, Void>{
         @Override
-        protected String[] doInBackground(Void... params) {
-            String[] info = new String[3];
+        protected Void doInBackground(Void... params) {
             try
             {
-                android.os.Debug.waitForDebugger();
                 URL url = new URL("http://www.dhs.gov/ntas/1.0/sample-feed.xml");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(connection.getInputStream());
-                parseXML(in, info);
+                parseXML(in);
                 in.close();
             } catch (IOException e){
                 e.printStackTrace();
             }
-            return info;
+            return null;
         }
-
-        /*@Override
-        protected void onPostExecute(String[] info){
-            String[] alert = {"The Department of Homeland Security has issued a national security alert."};
-        }*/
     }
 
     /* Given an input stream to the url for the DHS security alerts web page, parses the XML
      * file to get information about the alert such as type, summary, and details.
      */
-    public void parseXML(InputStream in, String[] info){
+    public void parseXML(InputStream in){
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser parser = xmlFactoryObject.newPullParser();
@@ -97,16 +95,16 @@ public class mainpage extends AppCompatActivity {
                 switch(event) {
                     case XmlPullParser.START_TAG:
                         if (name.equals("alert")){
-                            info[0] = parser.getAttributeValue(null, "type");
+                            type = parser.getAttributeValue(null, "type");
                         }else if(name.equals("summary")) {
                             try {
-                                info[1] = parser.nextText();
+                                summary = parser.nextText();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else if(name.equals("details")){
                             try {
-                                info[2] = parser.nextText().replaceAll("</?p>","");
+                                details = parser.nextText().replaceAll("</?p>","");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
