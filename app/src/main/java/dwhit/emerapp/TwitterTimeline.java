@@ -17,9 +17,10 @@ import twitter4j.conf.ConfigurationBuilder;
 
 
 public class TwitterTimeline{
-    public String user;
-    public TwitterTimeline(String user){
+    public String user, state;
+    public TwitterTimeline(String user, String state){
         this.user = user;
+        this.state = state;
     }
     public List<String> GetTimeline() {
         List<String> response = new ArrayList<String>();
@@ -33,18 +34,19 @@ public class TwitterTimeline{
         TwitterFactory tf = new TwitterFactory(cb.build());
         Twitter twitter1 = tf.getInstance();
         List<Status> statuses;
+        Paging p = new Paging();
+        p.setCount(200);
         try {
 
-            statuses = twitter1.getUserTimeline(user);
+            statuses = twitter1.getUserTimeline(user, p);
             for (Status status : statuses) {
-                //System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
-                response.add("@" + status.getUser().getScreenName() + " - " + status.getText());
+                if (status.getText().contains(","+state+" ")){
+                    response.add("@" + status.getUser().getScreenName() + " - " + status.getText());
+                }
             }
         } catch (TwitterException te) {
                 te.printStackTrace();
                 response.add("Failed to get timeline: " + te.getMessage());
-                //System.out.println("Failed to get timeline: " + te.getMessage());
-                //System.exit(-1);
         }
 
         return  response;

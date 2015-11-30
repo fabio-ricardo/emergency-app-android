@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -33,6 +34,7 @@ import java.util.List;
 public class mainpage extends AppCompatActivity {
 
     ListView lv;
+    private static final String[]states = {"AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC","FL","GA","GU","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MH","MA","MI","FM","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP","OH","OK","OR","PW","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","VI","WA","WV","WI","WY"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +57,28 @@ public class mainpage extends AppCompatActivity {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(1, mBuilder.build());
 
+            final Spinner spinner = (Spinner) findViewById(R.id.spinner2);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, states);
+
+        spinner.setAdapter(spinnerAdapter);
+
             final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
             lv.setAdapter(adapter);
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 Intent intent = new Intent(mainpage.this, openDetailActivity.class);
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if(position == 0) {
-                         String message = "ohioamberalert";
+                         String message = "amber_alert";
                         intent.putExtra("timeline", message);
+                        intent.putExtra("state",String.valueOf(spinner.getSelectedItem()));
                         startActivity(intent);
 
 
                         } else if(position == 1){
-                        String message = "swa_columbusoh";
+                        String message = "SimpleWeather"+spinner.getSelectedItem().toString();
                         intent.putExtra("timeline", message);
+                        intent.putExtra("state", " ");
                         startActivity(intent);
                     }
                 }

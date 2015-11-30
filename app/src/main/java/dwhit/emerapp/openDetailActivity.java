@@ -34,7 +34,7 @@ public class openDetailActivity extends AppCompatActivity {
             }
             ListView lv = (ListView) findViewById(R.id.listView);
             List<String> tweets = new ArrayList<String>();
-            TwitterTimeline getTweets = new TwitterTimeline(getIntent().getExtras().getString("timeline"));
+            TwitterTimeline getTweets = new TwitterTimeline(getIntent().getExtras().getString("timeline"),getIntent().getExtras().getString("state") );
             tweets = getTweets.GetTimeline();
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1,tweets);
             lv.setAdapter(adapter);
