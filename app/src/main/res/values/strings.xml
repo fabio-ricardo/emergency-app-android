@@ -2,4 +2,6 @@
     <string name="app_name">Alert Hub</string>
     <string name="title_activity_open_detail">Alert Hub</string>
     <string name="twitterPage">Large Text</string>
+    <string name="gcm_defaultSenderId">342085973522</string>
+    <string name="gcm_serverapikey">AIzaSyAo-EPBQgWYyd8Idho9Urfdnh9vGJfTRfo</string>
 </resources>

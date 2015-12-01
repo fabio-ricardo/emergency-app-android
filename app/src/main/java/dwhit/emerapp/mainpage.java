@@ -34,9 +34,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.iid.InstanceID;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -44,6 +46,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.net.HttpURLConnection;
@@ -280,6 +283,9 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
 
             super.onCreate(savedInstanceState);
 
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
+
         hashMapstates.put("Alabama","AL");
         hashMapstates.put("Alaska","AK");
         hashMapstates.put("Alberta","AB");
@@ -365,6 +371,9 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
             buildApp();
 
             new DHSAlert().execute();
+
+
+
 
         }
 
