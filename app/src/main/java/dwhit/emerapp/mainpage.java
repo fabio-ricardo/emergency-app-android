@@ -222,17 +222,6 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
         super.onStop();
     }
 
-    private int findState(String location) {
-        int j = 0;
-        for (int i = 0; i < states.length; i++) {
-            if (location.equals(states[i])) {
-                j = i;
-                break;
-            }
-        }
-        return j;
-    }
-
     protected void buildApp() {
         List<String> test_list = new ArrayList<String>();
         test_list.add("Amber");
@@ -252,7 +241,7 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
         spinner.setAdapter(spinnerAdapter);
 
         if (mCurrentLocation != null) {
-            spinner.setSelection(findState(mCurrentLocation));
+            spinner.setSelection(spinnerAdapter.getPosition(mCurrentLocation));
         }
 
         final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
