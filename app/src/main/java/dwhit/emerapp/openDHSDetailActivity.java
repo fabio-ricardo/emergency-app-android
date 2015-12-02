@@ -15,12 +15,12 @@ public class openDHSDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_dhs_detail);
 
         Intent intent = getIntent();
-        String type = intent.getStringExtra(mainpage.TYPE);
-        String summary = intent.getStringExtra(mainpage.SUMMARY);
-        String details = intent.getStringExtra(mainpage.DETAILS);
+        String type = intent.getStringExtra(dhsActivity.TYPE);
+        String summary = intent.getStringExtra(dhsActivity.SUMMARY);
+        String details = intent.getStringExtra(dhsActivity.DETAILS);
 
-        String message = "The Department of Homeland Security has issued an " + type +
-                " to national security.";
+        String message = "The Department of Homeland Security has issued a national emergency " +
+                "with an " + type + " to national security.";
 
         TextView tv1 = (TextView) findViewById(R.id.textView1);
         tv1.setText(message);
