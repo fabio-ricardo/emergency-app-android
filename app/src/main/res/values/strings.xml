@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Alert Hub</string>
-    <string name="title_dhs_activity">Alert Hub</string>
+    <string name="title_activity_open_detail">Alert Hub</string>
     <string name="title_activity_open_dhs_detail">Alert Hub</string>
 </resources>

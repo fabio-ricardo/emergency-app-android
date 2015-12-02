@@ -25,8 +25,12 @@ import java.util.List;
 public class mainpage extends AppCompatActivity {
 
     ListView lv;
-    String type = "", summary = "", details = "";
-    public final static String TYPE = "type", SUMMARY = "summary", DETAILS = "details";
+    String type = "";
+    String summary = "";
+    String details = "";
+    public final static String TYPE = "type";
+    public final static String SUMMARY = "summary";
+    public final static String DETAILS = "details";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +41,14 @@ public class mainpage extends AppCompatActivity {
         ArrayList<String> alerts = new ArrayList<String>();
 
         new DHSAlert().execute();
-        alerts.add("DHS Alerts");
+        alerts.add(0, "New DHS alert");
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alerts);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mainpage.this, dhsActivity.class);
+                Intent intent = new Intent(mainpage.this, openDHSDetailActivity.class);
                 intent.putExtra(TYPE, type);
                 intent.putExtra(SUMMARY, summary);
                 intent.putExtra(DETAILS, details);
@@ -91,7 +95,7 @@ public class mainpage extends AppCompatActivity {
                 switch(event) {
                     case XmlPullParser.START_TAG:
                         if (name.equals("alert")){
-                            type = parser.getAttributeValue(null, "type").toLowerCase();
+                            type = parser.getAttributeValue(null, "type");
                         }else if(name.equals("summary")) {
                             try {
                                 summary = parser.nextText();
