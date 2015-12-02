@@ -1,41 +1,14 @@
 package dwhit.emerapp;
 
-import android.Manifest;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.text.Html;
-import android.text.TextUtils;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -49,178 +22,13 @@ import java.util.ArrayList;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 
-public class mainpage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
+public class mainpage extends AppCompatActivity{
 
     ListView lv;
     private static final String[]states = {"AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC","FL","GA","GU","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MH","MA","MI","FM","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP","OH","OK","OR","PW","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","VI","WA","WV","WI","WY"};
-
-    Map<String, String> hashMapstates = new HashMap<String, String>();
-
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private double mLat;
-    private double mLon;
-    private LocationRequest mLocationRequest;
-
-    private String mCurrentLocation = null;
-
-    // Request code to use when launching the resolution activity
-    private static final int REQUEST_RESOLVE_ERROR = 1001;
-    // Unique tag for the error dialog fragment
-    private static final String DIALOG_ERROR = "dialog_error";
-    // Bool to track whether the app is already resolving an error
-    private boolean mResolvingError = false;
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        // get last location
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation == null) {
-            // request location updates
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
-            mLat = mLastLocation.getLatitude();
-            mLon = mLastLocation.getLongitude();
-            Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(mLat, mLon, 1);
-                if (addresses.size() > 0) {
-                    mCurrentLocation = hashMapstates.get(addresses.get(0).getAdminArea());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (mResolvingError) {
-            // Already attempting to resolve an error.
-            return;
-        } else if (result.hasResolution()) {
-            try {
-                mResolvingError = true;
-                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
-            } catch (IntentSender.SendIntentException e) {
-                // There was an error with the resolution intent. Try again.
-                mGoogleApiClient.connect();
-            }
-        } else {
-            // Show dialog using GoogleApiAvailability.getErrorDialog()
-            showErrorDialog(result.getErrorCode());
-            mResolvingError = true;
-        }
-    }
-
-    /* Creates a dialog for an error message */
-    private void showErrorDialog(int errorCode) {
-        // Create a fragment for the error dialog
-        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
-        // Pass the error that should be displayed
-        Bundle args = new Bundle();
-        args.putInt(DIALOG_ERROR, errorCode);
-        dialogFragment.setArguments(args);
-        dialogFragment.show(getSupportFragmentManager(), "errordialog");
-    }
-
-    /* Called from ErrorDialogFragment when the dialog is dismissed. */
-    public void onDialogDismissed() {
-        mResolvingError = false;
-    }
-
-    private void handleNewLocation(Location location) {
-        if (location == null) {
-            mCurrentLocation = null;
-        } else {
-            mLat = location.getLatitude();
-            mLon = location.getLongitude();
-            Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(mLat, mLon, 1);
-                if (addresses.size() > 0) {
-                    mCurrentLocation = hashMapstates.get(addresses.get(0).getAdminArea());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        handleNewLocation(location);
-    }
-
-    /* A fragment to display an error dialog */
-    public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Get the error code and retrieve the appropriate dialog
-            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
-            return GoogleApiAvailability.getInstance().getErrorDialog(
-                    this.getActivity(), errorCode, REQUEST_RESOLVE_ERROR);
-        }
-
-        @Override
-        public void onDismiss(DialogInterface dialog) {
-            ((mainpage) getActivity()).onDialogDismissed();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mResolvingError) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!mResolvingError) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
-        super.onStop();
-    }
 
     protected void buildApp() {
         List<String> test_list = new ArrayList<String>();
@@ -239,10 +47,6 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
                 android.R.layout.simple_spinner_item, states);
 
         spinner.setAdapter(spinnerAdapter);
-
-        if (mCurrentLocation != null) {
-            spinner.setSelection(spinnerAdapter.getPosition(mCurrentLocation));
-        }
 
         final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
         lv.setAdapter(adapter);
@@ -269,87 +73,8 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
 
             super.onCreate(savedInstanceState);
 
-        hashMapstates.put("Alabama","AL");
-        hashMapstates.put("Alaska","AK");
-        hashMapstates.put("Alberta","AB");
-        hashMapstates.put("American Samoa","AS");
-        hashMapstates.put("Arizona","AZ");
-        hashMapstates.put("Arkansas","AR");
-        hashMapstates.put("Armed Forces (AE)","AE");
-        hashMapstates.put("Armed Forces Americas","AA");
-        hashMapstates.put("Armed Forces Pacific","AP");
-        hashMapstates.put("British Columbia","BC");
-        hashMapstates.put("California","CA");
-        hashMapstates.put("Colorado","CO");
-        hashMapstates.put("Connecticut","CT");
-        hashMapstates.put("Delaware","DE");
-        hashMapstates.put("District Of Columbia","DC");
-        hashMapstates.put("Florida","FL");
-        hashMapstates.put("Georgia","GA");
-        hashMapstates.put("Guam","GU");
-        hashMapstates.put("Hawaii","HI");
-        hashMapstates.put("Idaho","ID");
-        hashMapstates.put("Illinois","IL");
-        hashMapstates.put("Indiana","IN");
-        hashMapstates.put("Iowa","IA");
-        hashMapstates.put("Kansas","KS");
-        hashMapstates.put("Kentucky","KY");
-        hashMapstates.put("Louisiana","LA");
-        hashMapstates.put("Maine","ME");
-        hashMapstates.put("Manitoba","MB");
-        hashMapstates.put("Maryland","MD");
-        hashMapstates.put("Massachusetts","MA");
-        hashMapstates.put("Michigan","MI");
-        hashMapstates.put("Minnesota","MN");
-        hashMapstates.put("Mississippi","MS");
-        hashMapstates.put("Missouri","MO");
-        hashMapstates.put("Montana","MT");
-        hashMapstates.put("Nebraska","NE");
-        hashMapstates.put("Nevada","NV");
-        hashMapstates.put("New Brunswick","NB");
-        hashMapstates.put("New Hampshire","NH");
-        hashMapstates.put("New Jersey","NJ");
-        hashMapstates.put("New Mexico","NM");
-        hashMapstates.put("New York","NY");
-        hashMapstates.put("Newfoundland","NF");
-        hashMapstates.put("North Carolina","NC");
-        hashMapstates.put("North Dakota","ND");
-        hashMapstates.put("Northwest Territories","NT");
-        hashMapstates.put("Nova Scotia","NS");
-        hashMapstates.put("Nunavut","NU");
-        hashMapstates.put("Ohio","OH");
-        hashMapstates.put("Oklahoma","OK");
-        hashMapstates.put("Ontario","ON");
-        hashMapstates.put("Oregon","OR");
-        hashMapstates.put("Pennsylvania","PA");
-        hashMapstates.put("Prince Edward Island","PE");
-        hashMapstates.put("Puerto Rico","PR");
-        hashMapstates.put("Quebec","PQ");
-        hashMapstates.put("Rhode Island","RI");
-        hashMapstates.put("Saskatchewan","SK");
-        hashMapstates.put("South Carolina","SC");
-        hashMapstates.put("South Dakota","SD");
-        hashMapstates.put("Tennessee","TN");
-        hashMapstates.put("Texas","TX");
-        hashMapstates.put("Utah","UT");
-        hashMapstates.put("Vermont","VT");
-        hashMapstates.put("Virgin Islands","VI");
-        hashMapstates.put("Virginia","VA");
-        hashMapstates.put("Washington","WA");
-        hashMapstates.put("West Virginia","WV");
-        hashMapstates.put("Wisconsin","WI");
-        hashMapstates.put("Wyoming","WY");
-        hashMapstates.put("Yukon Territory","YT");
-
-            mLocationRequest = LocationRequest.create()
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                    .setInterval(10000)
-                    .setFastestInterval(1000);
-
             setContentView(R.layout.activity_mainpage);
             lv = (ListView) findViewById(R.id.alertListView);
-
-            buildGoogleApiClient();
 
             buildApp();
 
