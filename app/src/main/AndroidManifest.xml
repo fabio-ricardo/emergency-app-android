@@ -23,8 +23,26 @@
         </activity>
         <activity
             android:name=".openDetailActivity"
-            android:label="@string/title_activity_open_detail"
+            android:label="Alert Hub"
             android:parentActivityName=".mainpage"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dwhit.emerapp.mainpage" />
+        </activity>
+        <activity
+            android:name=".dhsActivity"
+            android:label="Alert Hub"
+            android:parentActivityName=".mainpage"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dwhit.emerapp.mainpage" />
+        </activity>
+		<activity
+            android:name=".openDHSDetailActivity"
+            android:label="Alert Hub"
+            android:parentActivityName=".dhsActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

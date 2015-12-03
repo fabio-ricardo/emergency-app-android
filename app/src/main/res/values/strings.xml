@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Alert Hub</string>
     <string name="title_activity_open_detail">Alert Hub</string>
+    <string name="title_activity_dhs">Alert Hub</string>
+    <string name="title_activity_open_dhs_detail">Alert Hub</string>
     <string name="twitterPage">Large Text</string>
 </resources>
