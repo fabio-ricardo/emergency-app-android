@@ -12,7 +12,7 @@
         android:id="@+id/alertListView"
         android:layout_below="@+id/spinner2"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"/>
 
     <TextClock
         android:layout_width="wrap_content"
