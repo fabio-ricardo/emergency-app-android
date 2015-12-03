@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
+
 import android.text.Html;
 import android.text.TextUtils;
 import android.app.NotificationManager;
@@ -60,6 +61,8 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
 
     ListView lv;
     private static final String[]states = {"OH","AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC","FL","GA","GU","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MH","MA","MI","FM","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP","OK","OR","PW","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","VI","WA","WV","WI","WY"};
+    String type = "", summary = "", details = "";
+    public final static String TYPE = "type", SUMMARY = "summary", DETAILS = "details";
 
     Map<String, String> hashMapstates = new HashMap<String, String>();
 
@@ -240,6 +243,7 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
         List<String> test_list = new ArrayList<String>();
         test_list.add("Amber");
         test_list.add("Weather");
+        test_list.add("Presidential");
 
         /*NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setSmallIcon(R.drawable.triangle);
@@ -257,7 +261,7 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
         if (mCurrentLocation != null) {
             spinner.setSelection(findState(mCurrentLocation));
         }
-
+        new DHSAlert().execute();
         final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -273,6 +277,12 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
                     intent.putExtra("timeline", message);
                     intent.putExtra("state","");
                     startActivity(intent);
+                } else if(position == 2){
+                    Intent intent2 = new Intent(mainpage.this, dhsActivity.class);
+                    intent2.putExtra(TYPE, type);
+                    intent2.putExtra(SUMMARY, summary);
+                    intent2.putExtra(DETAILS, details);
+                    startActivity(intent2);
                 }
             }
         });
@@ -370,47 +380,34 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
 
             buildApp();
 
-            new DHSAlert().execute();
-
-
-
-
         }
-
 
     /* Uses AsyncTask to run the HTTP get request on a background thread.
      *
      * Retrieves the XML file from the Department of Homeland Security alerts page and parses the
      * info from this file to be used when displaying alerts.
      */
-    private class DHSAlert extends AsyncTask<Void, Void, String[]>{
+    private class DHSAlert extends AsyncTask<Void, Void, Void>{
         @Override
-        protected String[] doInBackground(Void... params) {
-            String[] info = new String[3];
+        protected Void doInBackground(Void... params) {
             try
             {
-                android.os.Debug.waitForDebugger();
                 URL url = new URL("http://www.dhs.gov/ntas/1.0/sample-feed.xml");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(connection.getInputStream());
-                parseXML(in, info);
+                parseXML(in);
                 in.close();
             } catch (IOException e){
                 e.printStackTrace();
             }
-            return info;
+            return null;
         }
-
-        /*@Override
-        protected void onPostExecute(String[] info){
-            String[] alert = {"The Department of Homeland Security has issued a national security alert."};
-        }*/
     }
 
     /* Given an input stream to the url for the DHS security alerts web page, parses the XML
      * file to get information about the alert such as type, summary, and details.
      */
-    public void parseXML(InputStream in, String[] info){
+    public void parseXML(InputStream in){
         try {
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser parser = xmlFactoryObject.newPullParser();
@@ -423,16 +420,16 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
                 switch(event) {
                     case XmlPullParser.START_TAG:
                         if (name.equals("alert")){
-                            info[0] = parser.getAttributeValue(null, "type");
+                            type = parser.getAttributeValue(null, "type").toLowerCase();
                         }else if(name.equals("summary")) {
                             try {
-                                info[1] = parser.nextText();
+                                summary = parser.nextText();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else if(name.equals("details")){
                             try {
-                                info[2] = parser.nextText().replaceAll("</?p>","");
+                                details = parser.nextText().replaceAll("</?p>","");
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
