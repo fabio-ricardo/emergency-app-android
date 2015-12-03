@@ -4,8 +4,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-<<<<<<< HEAD
-=======
+
 import android.text.Html;
 import android.text.TextUtils;
 import android.app.NotificationManager;
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
->>>>>>> origin/dhs-api
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,80 +34,45 @@ import java.util.List;
 public class mainpage extends AppCompatActivity {
 
     ListView lv;
-    String type = "";
-    String summary = "";
-    String details = "";
-    public final static String TYPE = "type";
-    public final static String SUMMARY = "summary";
-    public final static String DETAILS = "details";
+    String type = "", summary = "", details = "";
+    public final static String TYPE = "type", SUMMARY = "summary", DETAILS = "details";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-<<<<<<< HEAD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainpage);
         lv = (ListView) findViewById(R.id.alertListView);
 
-        ArrayList<String> alerts = new ArrayList<String>();
-
         new DHSAlert().execute();
-        alerts.add(0, "New DHS alert");
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, alerts);
+        List<String> test_list = new ArrayList<String>();
+        test_list.add("Amber Alerts");
+        test_list.add("Weather Alerts");
+        test_list.add("Presidential Alerts");
+
+        final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
+            Intent intent = new Intent(mainpage.this, openDetailActivity.class);
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mainpage.this, openDHSDetailActivity.class);
-                intent.putExtra(TYPE, type);
-                intent.putExtra(SUMMARY, summary);
-                intent.putExtra(DETAILS, details);
-                startActivity(intent);
+                if (position == 0) {
+                    String message = "ohioamberalert";
+                    intent.putExtra("timeline", message);
+                    startActivity(intent);
+                } else if (position == 1) {
+                    String message = "swa_columbusoh";
+                    intent.putExtra("timeline", message);
+                    startActivity(intent);
+                } else if (position == 2) {
+                    Intent intent2 = new Intent(mainpage.this, dhsActivity.class);
+                    intent2.putExtra(TYPE, type);
+                    intent2.putExtra(SUMMARY, summary);
+                    intent2.putExtra(DETAILS, details);
+                    startActivity(intent2);
+                }
             }
         });
     }
-=======
-
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_mainpage);
-            lv = (ListView) findViewById(R.id.alertListView);
-            // TODO: get actual info
-
-            new DHSAlert().execute();
-
-            List<String> test_list = new ArrayList<String>();
-            test_list.add("Amber Alerts");
-            test_list.add("Weather Alerts");
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
-            mBuilder.setSmallIcon(R.drawable.triangle);
-            mBuilder.setContentTitle("Alert Hub");
-            mBuilder.setContentText("Check New Alerts!");
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
-
-            final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, test_list);
-            lv.setAdapter(adapter);
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                Intent intent = new Intent(mainpage.this, openDetailActivity.class);
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if(position == 0) {
-                         String message = "ohioamberalert";
-                        intent.putExtra("timeline", message);
-                        startActivity(intent);
-
-
-                        } else if(position == 1){
-                        String message = "swa_columbusoh";
-                        intent.putExtra("timeline", message);
-                        startActivity(intent);
-                    }
-                }
-            });
-
-        }
-
->>>>>>> origin/dhs-api
 
     /* Uses AsyncTask to run the HTTP get request on a background thread.
      *
@@ -149,7 +112,7 @@ public class mainpage extends AppCompatActivity {
                 switch(event) {
                     case XmlPullParser.START_TAG:
                         if (name.equals("alert")){
-                            type = parser.getAttributeValue(null, "type");
+                            type = parser.getAttributeValue(null, "type").toLowerCase();
                         }else if(name.equals("summary")) {
                             try {
                                 summary = parser.nextText();
