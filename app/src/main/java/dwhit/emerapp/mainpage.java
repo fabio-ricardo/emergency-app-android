@@ -59,7 +59,7 @@ import java.util.Map;
 public class mainpage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
 
     ListView lv;
-    private static final String[]states = {"AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC","FL","GA","GU","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MH","MA","MI","FM","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP","OH","OK","OR","PW","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","VI","WA","WV","WI","WY"};
+    private static final String[]states = {"OH","AL","AK","AS","AZ","AR","CA","CO","CT","DE","DC","FL","GA","GU","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MH","MA","MI","FM","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","MP","OK","OR","PW","PA","PR","RI","SC","SD","TN","TX","UT","VT","VA","VI","WA","WV","WI","WY"};
 
     Map<String, String> hashMapstates = new HashMap<String, String>();
 
@@ -271,7 +271,7 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
                 } else if(position == 1){
                     String message = "SimpleWeather"+spinner.getSelectedItem().toString();
                     intent.putExtra("timeline", message);
-                    intent.putExtra("state", " ");
+                    intent.putExtra("state","");
                     startActivity(intent);
                 }
             }

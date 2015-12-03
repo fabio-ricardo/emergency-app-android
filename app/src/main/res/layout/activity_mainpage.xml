@@ -10,11 +10,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/alertListView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:choiceMode="singleChoice"
         android:clickable="true"
-        android:layout_below="@+id/spinner" />
+        android:layout_below="@+id/spinner"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp" />
 
     <TextClock
         android:layout_width="wrap_content"
@@ -30,5 +30,24 @@
         android:id="@+id/spinner"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:id="@+id/imageView"
+        android:src="@drawable/amber_alert"
+        android:layout_alignTop="@+id/alertListView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="@android:dimen/app_icon_size"
+        android:layout_height="@android:dimen/app_icon_size"
+        android:id="@+id/imageView2"
+        android:src="@drawable/cloud"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp" />
 
 </RelativeLayout>
