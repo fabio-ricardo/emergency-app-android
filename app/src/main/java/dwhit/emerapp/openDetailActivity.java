@@ -26,7 +26,7 @@ public class openDetailActivity extends AppCompatActivity {
             TextView textView = (TextView) findViewById(R.id.textView);
             textView.setText("Twitter Source: @"+getIntent().getExtras().getString("timeline"));
          setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             if (android.os.Build.VERSION.SDK_INT > 9) {
                 StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
