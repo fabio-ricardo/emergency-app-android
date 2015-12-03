@@ -268,7 +268,7 @@ public class mainpage extends AppCompatActivity implements GoogleApiClient.Conne
                 } else if(position == 1){
                     String message = "SimpleWeather"+spinner.getSelectedItem().toString();
                     intent.putExtra("timeline", message);
-                    intent.putExtra("state", " ");
+                    intent.putExtra("state","");
                     startActivity(intent);
                 }
             }
